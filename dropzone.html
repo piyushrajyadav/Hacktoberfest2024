@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Dropzone</title>
+    <style>
+        #dropzone {
+            width: 300px;
+            height: 200px;
+            border: 2px dashed #cccccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            color: #777777;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        #dropzone.hover {
+            border-color: #0000ff;
+            color: #0000ff;
+        }
+
+        #fileList {
+            margin-top: 20px;
+        }
+
+        #fileList li {
+            list-style-type: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="dropzone">Drop your files here</div>
+<ul id="fileList"></ul>
+
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const fileList = document.getElementById('fileList');
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Highlight drop zone when file is dragged over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => dropzone.classList.add('hover'), false);
+    });
+
+    // Remove highlight when drag is done
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => dropzone.classList.remove('hover'), false);
+    });
+
+    // Handle dropped files
+    dropzone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+    }
+
+    function handleFiles(files) {
+        [...files].forEach(uploadFile);
+    }
+
+    function uploadFile(file) {
+        const li = document.createElement('li');
+        li.textContent = `${file.name} - ${Math.round(file.size / 1024)} KB`;
+        fileList.appendChild(li);
+    }
+</script>
+
+</body>
+</html>
